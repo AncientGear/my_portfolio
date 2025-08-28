@@ -1,0 +1,17 @@
+.vscode
+[node_modules/]
+*.log
+dist/
+build/
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.swo
+*.DS_Store
+*.idea/
+*.bak
+*.tmp
+assets/*.bak
