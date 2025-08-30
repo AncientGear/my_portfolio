@@ -1,0 +1,22 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["Docker Image CI"]
+    types:
+      - completed
+  
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Pull the Docker image
+      run: docker pull ancientgear98/cicd_pipeline:latest
+    - name: Run the Docker container
+      run: docker run -d -p 80:80 ancientgear98/cicd_pipeline:latest
+    - name: Delete prevous instances
+      run: docker rm -f cicd_pipeline || true
+    - name: Run the Docker container
+      run: docker run -d --name cicd_pipeline -p 8080:8080 ancientgear98/cicd_pipeline:latest
