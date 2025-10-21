@@ -12,6 +12,8 @@ spec:
       labels:
         app: my-portfolio
     spec:
+      imagePullSecrets:
+        - name: regcred
       containers:
         - name: my-portfolio
           image: ancientgear98/my_portfolio:latest
