@@ -1,4 +1,4 @@
-name: deploy
+name: Push Docker Image
 on: push
 jobs:
   deploy:

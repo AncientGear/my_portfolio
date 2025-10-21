@@ -1,22 +1,32 @@
-name: CD Pipeline
+name: Deploy on K8S Cluster
 
 on:
   workflow_run:
-    workflows: ["Docker Image CI"]
+    workflows: ["Push Docker Image"]
     types:
       - completed
   
 jobs:
-  build:
-    runs-on: self-hosted
-
+  deploy:
+    name: deploy to cluster
+    runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - name: Pull the Docker image
-      run: sudo docker pull ancientgear98/cicd_pipeline:latest
-    - name: Run the Docker container
-      run: sudo docker run -d -p 80:80 ancientgear98/cicd_pipeline:latest
-    - name: Delete prevous instances
-      run: sudo docker rm -f cicd_pipeline || true
-    - name: Run the Docker container
-      run: sudo docker run -d --name cicd_pipeline -p 8080:8080 ancientgear98/cicd_pipeline:latest
+    - uses: actions/checkout@master
+    
+    - name: Update image tag in deployment YAML
+      run: |
+        sed -i "s|image:.*|image: ${{ github.repository }}:${{ github.sha }}|g" .github/workflows/yaml/my-portfolio-deploy.yaml
+    
+    - name: deploy to cluster
+      uses: steebchen/kubectl@v2.0.0
+      with: # defaults to latest kubectl binary version
+        config: ${{ secrets.KUBE_CONFIG_DATA }}
+        command: apply -f .github/workflows/yaml/my-portfolio-deploy.yaml
+    
+    - name: verify deployment
+      uses: steebchen/kubectl@v2.0.0
+      with:
+        config: ${{ secrets.KUBE_CONFIG_DATA }}
+        version: v1.21.0 # specify kubectl binary version explicitly
+        binaries-url: "https://dl.k8s.io/release/v1.21.0/bin/linux/amd64/kubectl" # specify the download url explicitly
+        command: rollout status deployment/my-portfolio
