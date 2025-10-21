@@ -10,9 +10,8 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           tags: ${{ github.sha }}
-          repository: ${{ github.repository }}
+          repository: ancientgear98/my_portfolio
           tag_with_ref: true
           tag_with_sha: true
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          
