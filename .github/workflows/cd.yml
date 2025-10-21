@@ -15,7 +15,7 @@ jobs:
     
     - name: Update image tag in deployment YAML
       run: |
-        sed -i "s|image:.*|image: ${{ vars.DOCKER_REPOSITORY }}:${{ github.sha }}|g" .github/workflows/yaml/my-portfolio-deploy.yaml
+        sed -i "s|image:.*|image: ${{ vars.DOCKER_REPOSITORY }}/${{ vars.DOCKER_PROJECT_NAME }}:${{ github.sha }}|g" .github/workflows/yaml/my-portfolio-deploy.yaml
     
     - name: deploy to cluster
       uses: steebchen/kubectl@v2.0.0
