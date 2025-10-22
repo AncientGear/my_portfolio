@@ -1,7 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-portfolio
+  name: my-portfolio-deployment
+  namespace: default
+  labels:
+    app: my-portfolio
 spec:
   replicas: 1
   selector:
@@ -12,17 +15,30 @@ spec:
       labels:
         app: my-portfolio
     spec:
+      containers:
+      - name: my-portfolio
+        image: ancientgear98/my_portfolio:latest
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "100m"
+          limits:
+            memory: "128Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
       imagePullSecrets:
         - name: regcred
-      containers:
-        - name: my-portfolio
-          image: ancientgear98/my_portfolio:latest
-          resources:
-            limits:
-              memory: "128Mi"
-              cpu: "500m"
-            requests:
-              memory: "64Mi"
-              cpu: "250m"
-          ports:
-          - containerPort: 80
