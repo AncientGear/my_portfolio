@@ -20,7 +20,7 @@ jobs:
       - name: Setup kubeconfig
         run: |
           mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/config
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" > $HOME/.kube/config
       
       - name: Create Docker registry secret
         run: |
